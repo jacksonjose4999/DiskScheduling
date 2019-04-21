@@ -1,35 +1,17 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class FIFO extends JPanel {
-    FIFO(int frameCount, int[] refString){
-        setPreferredSize(new Dimension(500,300));
-        int frame[][] = new int[frameCount][refString.length];
-        initialise(frame);
-        int count = 0;
-        boolean flag[] = new boolean[frameCount];
+    DefaultTableModel model;
+    JTable fifoTable;
 
-        for (int i = 0 ; i < refString.length ; i++){
-            if (!checkPresence(frame, i, refString[i])){
-                frame[count%frameCount][i] = refString[i];
-                flag[count%frameCount] = true;
-                initialiseRow(frame[count%frameCount],refString[i],i);
-                count++;
-            }
-        }
-
-        System.out.println("FIFO");
-
-        for (int i = 0 ; i < frame.length; i++) {
-            for (int j = 0; j < frame[0].length; j++) {
-                if (frame[i][j] == Integer.MAX_VALUE){
-                    System.out.print(-1+" ");
-                    continue;
-                }
-                System.out.print(frame[i][j]+"  ");
-            }
-            System.out.println("");
-        }
+    FIFO(){
+        model = new DefaultTableModel();
+        fifoTable = new JTable(model);
+        fifoTable.getTableHeader().setReorderingAllowed(false);
+        JScrollPane scrollPane = new JScrollPane(fifoTable);
+        add(scrollPane);
 
     }
 
@@ -51,6 +33,23 @@ public class FIFO extends JPanel {
     public static void initialiseRow(int [] array, int num, int i){
         for(int j = i ; j < array.length; j++)
             array[j] = num;
+    }
+
+    public static int[][] getFifoArray(int frameCount, int []refString){
+        int frame[][] = new int[frameCount][refString.length];
+        initialise(frame);
+        int count = 0;
+        boolean flag[] = new boolean[frameCount];
+
+        for (int i = 0 ; i < refString.length ; i++){
+            if (!checkPresence(frame, i, refString[i])){
+                frame[count%frameCount][i] = refString[i];
+                flag[count%frameCount] = true;
+                initialiseRow(frame[count%frameCount],refString[i],i);
+                count++;
+            }
+        }
+        return frame;
     }
 
     @Override

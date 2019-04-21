@@ -1,18 +1,16 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class LRU extends JPanel {
-    LRU(int frameCount, int[] refString){
-        int frame[][] = new int[frameCount][refString.length];
-        FIFO.initialise(frame);
+    DefaultTableModel model;
+    JTable fifoTable;
 
-        for( int i = 0 ; i < refString.length ; i++){
-            if (!FIFO.checkPresence(frame, i, refString[i])){
-                int replace = findLeastRecent(frame, i , refString);
-                FIFO.initialiseRow(frame[replace], refString[i], i);
-            }
-        }
-
-        printer(frame);
+    LRU(){
+        model = new DefaultTableModel();
+        fifoTable = new JTable(model);
+        fifoTable.getTableHeader().setReorderingAllowed(false);
+        JScrollPane scrollPane = new JScrollPane(fifoTable);
+        add(scrollPane);
     }
 
     int findLeastRecent(int [][]array, int col, int [] refString){
@@ -63,5 +61,20 @@ public class LRU extends JPanel {
             }
             System.out.println("");
         }
+    }
+
+    public int[][] getLruArray(int frameCount, int []refString){
+        int frame[][] = new int[frameCount][refString.length];
+        FIFO.initialise(frame);
+
+        for( int i = 0 ; i < refString.length ; i++){
+            if (!FIFO.checkPresence(frame, i, refString[i])){
+                int replace = findLeastRecent(frame, i , refString);
+                FIFO.initialiseRow(frame[replace], refString[i], i);
+            }
+        }
+
+        printer(frame);
+        return frame;
     }
 }

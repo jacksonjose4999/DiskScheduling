@@ -1,18 +1,16 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class OPT extends JPanel {
-    OPT(int frameCount, int[] refString){
-        int frame[][] = new int[frameCount][refString.length];
-        FIFO.initialise(frame);
-        boolean flag[] = new boolean[frameCount];
-
-        for (int i = 0 ; i < refString.length ; i ++){
-            if (!FIFO.checkPresence(frame, i, refString[i])){
-                int replace = findOptimal(refString, frame, i);
-                FIFO.initialiseRow(frame[replace], refString[i], i);
-            }
-        }
-        printer(frame);
+    DefaultTableModel model;
+    JTable optTable;
+    OPT(){
+        model = new DefaultTableModel();
+        optTable = new JTable(model);
+        optTable.getTableHeader().setReorderingAllowed(false);
+        JScrollPane scrollPane = new JScrollPane(optTable);
+        add(scrollPane);
     }
 
     public int findOptimal(int []refString, int [][] array, int i) {
@@ -60,5 +58,24 @@ public class OPT extends JPanel {
             System.out.println("");
         }
     }
+
+    public int[][] getOptArray(int frameCount, int []refString){
+        int frame[][] = new int[frameCount][refString.length];
+        FIFO.initialise(frame);
+        boolean flag[] = new boolean[frameCount];
+
+        for (int i = 0 ; i < refString.length ; i ++){
+            if (!FIFO.checkPresence(frame, i, refString[i])){
+                int replace = findOptimal(refString, frame, i);
+                FIFO.initialiseRow(frame[replace], refString[i], i);
+            }
+        }
+        printer(frame);
+        return frame;
+    }
+    public Dimension getPreferredSize() {
+        return new Dimension(500,500);
+    }
+
 }
 
