@@ -11,8 +11,8 @@ public class InputWindow extends JFrame {
 
         JLabel NoOfFrames = new JLabel("Number of Frames");
         GridBagConstraints c = new GridBagConstraints();
-        c.weightx = 0.5;
-        c.weighty = 0.5;
+        c.weightx = 0.1;
+        c.weighty = 0.1;
         c.gridy = 0;
         c.gridx = 0;
         c.fill = 1;
@@ -29,7 +29,7 @@ public class InputWindow extends JFrame {
         add(referenceStringsText, c);
 
         JTextField referenceString = new JTextField();
-        referenceString.setPreferredSize(new Dimension(200, referenceString.getHeight() + 25));
+        referenceString.setPreferredSize(new Dimension(200, referenceString.getHeight() ));
         c.gridx++;
         add(referenceString, c);
 
@@ -59,7 +59,12 @@ public class InputWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int[] refString = getReferenceStringValues(referenceString.getText().toString());
-                setData(fifo.model,FIFO.getFifoArray((int)framesCount.getSelectedItem()),);
+                setData(fifo.model,FIFO.getFifoArray((int)framesCount.getSelectedItem(),refString),
+                        referenceString.getText().split(","));
+                setData(opt.model,opt.getOptArray((int)framesCount.getSelectedItem(),refString),
+                        referenceString.getText().split(","));
+                setData(lru.model,lru.getLruArray((int)framesCount.getSelectedItem(),refString),
+                        referenceString.getText().split(","));
             }
         });
 

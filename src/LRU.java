@@ -1,16 +1,25 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class LRU extends JPanel {
     DefaultTableModel model;
-    JTable fifoTable;
-
+    JTable lruTable;
+    JLabel lru = new JLabel("LRU");
+    static JLabel PF = new JLabel("Page Fault:");
     LRU(){
+        JPanel labelPanel = new JPanel();
+        setLayout(new BorderLayout());
+        labelPanel.setLayout(new BorderLayout());
+        labelPanel.add(lru,BorderLayout.WEST);
+        labelPanel.add(PF,BorderLayout.EAST);
+
         model = new DefaultTableModel();
-        fifoTable = new JTable(model);
-        fifoTable.getTableHeader().setReorderingAllowed(false);
-        JScrollPane scrollPane = new JScrollPane(fifoTable);
-        add(scrollPane);
+        lruTable = new JTable(model);
+        lruTable.getTableHeader().setReorderingAllowed(false);
+        JScrollPane scrollPane = new JScrollPane(lruTable);
+        add(labelPanel,BorderLayout.NORTH);
+        add(scrollPane,BorderLayout.CENTER);
     }
 
     int findLeastRecent(int [][]array, int col, int [] refString){
@@ -63,18 +72,35 @@ public class LRU extends JPanel {
         }
     }
 
-    public int[][] getLruArray(int frameCount, int []refString){
+    public String[][] getLruArray(int frameCount, int []refString){
         int frame[][] = new int[frameCount][refString.length];
         FIFO.initialise(frame);
-
+        int count = 0;
         for( int i = 0 ; i < refString.length ; i++){
             if (!FIFO.checkPresence(frame, i, refString[i])){
                 int replace = findLeastRecent(frame, i , refString);
                 FIFO.initialiseRow(frame[replace], refString[i], i);
+                count++;
             }
         }
 
         printer(frame);
-        return frame;
+        String [][]f = new String[frameCount][refString.length];
+        for (int i = 0 ; i < frameCount; i++){
+            for (int j = 0 ; j < refString.length ; j++){
+                if (frame[i][j] == Integer.MAX_VALUE){
+                    f[i][j] = "Null";
+                    continue;
+                }
+                f[i][j] = Integer.toString(frame[i][j]);
+            }
+        }
+
+        PF.setText("Page Fault: "+count);
+        return f;
     }
+    public Dimension getPreferredSize() {
+        return new Dimension(500,500);
+    }
+
 }

@@ -5,13 +5,20 @@ import java.awt.*;
 public class FIFO extends JPanel {
     DefaultTableModel model;
     JTable fifoTable;
-
+    static JLabel PF = new JLabel("Page Fault:");
     FIFO(){
+        setLayout(new BorderLayout());
+        JPanel labelPanel = new JPanel();
+        labelPanel.setLayout(new BorderLayout());
+        JLabel fifoLabel = new JLabel("FIFO");
+        labelPanel.add(fifoLabel,BorderLayout.WEST);
+        labelPanel.add(PF,BorderLayout.EAST);
         model = new DefaultTableModel();
         fifoTable = new JTable(model);
         fifoTable.getTableHeader().setReorderingAllowed(false);
         JScrollPane scrollPane = new JScrollPane(fifoTable);
-        add(scrollPane);
+        add(labelPanel,BorderLayout.NORTH);
+        add(scrollPane,BorderLayout.CENTER);
 
     }
 
@@ -35,7 +42,7 @@ public class FIFO extends JPanel {
             array[j] = num;
     }
 
-    public static int[][] getFifoArray(int frameCount, int []refString){
+    public static String[][] getFifoArray(int frameCount, int []refString){
         int frame[][] = new int[frameCount][refString.length];
         initialise(frame);
         int count = 0;
@@ -49,7 +56,20 @@ public class FIFO extends JPanel {
                 count++;
             }
         }
-        return frame;
+
+        String [][]f = new String[frameCount][refString.length];
+        for (int i = 0 ; i < frameCount; i++){
+            for (int j = 0 ; j < refString.length ; j++){
+                if (frame[i][j] == Integer.MAX_VALUE){
+                    f[i][j] = "Null";
+                    continue;
+                }
+                f[i][j] = Integer.toString(frame[i][j]);
+            }
+        }
+
+        PF.setText("Page Fault: "+count);
+        return f;
     }
 
     @Override
